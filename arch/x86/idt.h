@@ -1,7 +1,6 @@
 #ifndef __IDT_H__
 #define __IDT_H__
 
-#include <cstdint>
 #include <stdint.h>
 
 #define IDT_TYPE_INTERRUPT 0x0E
