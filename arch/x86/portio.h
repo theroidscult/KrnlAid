@@ -75,4 +75,8 @@ static inline uint64_t inq(uint16_t port) {
     return value;
 }
 
+static inline void io_wait() {
+    outb(0x80, 0); //0x80 is unused port
+}
+
 #endif // __PORTIO_H__
