@@ -35,6 +35,7 @@
         int num = 0;
         char strbuf[1024] = {0};
         int strbuf_len = 0;
+        char* s;
 
         for(int i = 0; fmt[i]; i++) {
             if (fmt[i] == '%') {
@@ -77,7 +78,7 @@
                         flags &= ~FLAG_IN_THINGY;
                         break;
                     case 's':
-                        char* s = va_arg(args, char*);
+                        s = va_arg(args, char*);
                         for(int j = 0; s[j]; j++) {
                             print_callback(s[j]);
                         }
