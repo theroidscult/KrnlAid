@@ -45,7 +45,7 @@
         static char numaplpha[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
         for(int i = 0; fmt[i]; i++) {
-            if (fmt[i] == '%') {
+            if (fmt[i] == '%' && !(flags & FLAG_IN_THINGY)) {
                 flags |= FLAG_IN_THINGY;
                 continue;
             }
