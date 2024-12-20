@@ -24,18 +24,21 @@
     #endif
 
     #define FLAG_IN_THINGY 1
-    #define FLAG_FORCE_64BIT 1 << 1
+    #define FLAG_SIGNED 1 << 1
     
-    //!!! SUPPORTED FORMATS: %d/%i, %x, %s !!!
+    //!!! SUPPORTED FORMATS: %u, %x, %s, %p, %c, %l*, %h*, %hh* !!!
     void kprintf(const char* fmt, ...) {
         va_list args;
         va_start(args, fmt);
 
         uint64_t flags = 0;
-        int num = 0;
+        uintptr_t num = 0;
+        uint32_t base = 10;
+        uint8_t bits = 0;
         char strbuf[1024] = {0};
-        int strbuf_len = 0;
+        uint32_t strbuf_len = 0;
         char* s;
+        static char numaplpha[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
         for(int i = 0; fmt[i]; i++) {
             if (fmt[i] == '%') {
@@ -44,37 +47,49 @@
             }
             if(flags & FLAG_IN_THINGY) {
                 switch(fmt[i]) {
-                    case 'i': //fallthru
-                    case 'd':
-                        num = va_arg(args, int);
-                        strbuf_len = 0;
-                        while(num){
-                            strbuf[strbuf_len] = num % 10 + '0';
-                            num /= 10;
-                            strbuf_len++;
-                        }
-                        for(int j = strbuf_len - 1; j >= 0; j--) {
-                            print_callback(strbuf[j]);
-                        }
-                        flags &= ~FLAG_IN_THINGY;
+                    //Specifiers
+                    case 'l':
+                        bits = 64;
                         break;
+                    case 'h':
+                        if(bits == 16){
+                            bits = 8;
+                        }else {
+                            bits = 16;
+                        }
+                        break;
+                    //Commands
                     case 'p':
-                        flags |= FLAG_FORCE_64BIT;
+                        bits = sizeof(uintptr_t) * 8;
                         //fallthru
                     case 'x':
+                        base = 16;
+                        //fallthru
+                    case 'i': //fallthru
+                    case 'u':
                         num = va_arg(args, int);
-                        strbuf_len = 0;
-                        while(num){
-                            strbuf [strbuf_len] = (num % 16 + (num % 16 < 10 ? '0' : 'a' - 10));
-                            num /= 16;
+
+                        do{
+                            strbuf [strbuf_len] = numaplpha[num % base];
+                            num /= base;
                             strbuf_len++;
-                        }
-                        for(int j = (flags & FLAG_FORCE_64BIT) ? 20 : strbuf_len - 1; j >= 0; j--) {
+                        }while(num);
+
+                        for(int j = bits ? bits / 4 : strbuf_len; j > 0; j--) {
                             if(j > strbuf_len) {
                                 print_callback('0');
+                            } else {
+                                print_callback(strbuf[j-1]);
                             }
-                            print_callback(strbuf[j]);
                         }
+
+                        strbuf_len = 0;
+                        base = 10;
+                        bits = 0;
+                        flags &= ~FLAG_IN_THINGY;
+                        break;
+                    case 'c':
+                        print_callback(va_arg(args, int));
                         flags &= ~FLAG_IN_THINGY;
                         break;
                     case 's':
@@ -82,6 +97,10 @@
                         for(int j = 0; s[j]; j++) {
                             print_callback(s[j]);
                         }
+                        flags &= ~FLAG_IN_THINGY;
+                        break;
+                    case '%':
+                        print_callback('%');
                         flags &= ~FLAG_IN_THINGY;
                         break;
                     default:
