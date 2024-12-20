@@ -7,15 +7,19 @@
 
 /*
  * !!! THIS IS AN INTENTIONALLY BAREBONES PRINTF !!!
+ * !!! PRINTF NEEDS TO BE IMPLEMENTED IN AT LEAST ONE FILE !!!
  * SUPPORTED FORMATS:
- * - %d/%i
+ * - %u
  * - %x
  * - %s
  * - %p
+ * - %c
+ * SPECIFIERS:
+ * - %l*
+ * - %h*
+ * - %hh*
  *
- *
- * Usage: printf("Hello, %s", "world");
- * !!! PRINTF NEEDS TO BE IMPLEMENTED IN AT LEAST ONE FILE !!!
+ * Usage: printf(format,...); (e.g. printf("%s", "Hello world!");)
 */
 
 #ifdef PRINTF_IMPL 
