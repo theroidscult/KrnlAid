@@ -25,8 +25,8 @@
 
     #define FLAG_IN_THINGY 1
     #define FLAG_SIGNED 1 << 1
-    
-    //!!! SUPPORTED FORMATS: %u, %x, %s, %p, %c, %l*, %h*, %hh* !!!
+
+    //!!! SUPPORTED FORMATS: %u, %x, %s, %p, %c SPECIFIERS: %l*, %h*, %hh* !!!
     void kprintf(const char* fmt, ...) {
         va_list args;
         va_start(args, fmt);
@@ -118,7 +118,7 @@
         va_end(args);
     }
 #else
-    //!!! SUPPORTED FORMATS: %d/%i, %x, %s !!!
+    //!!! SUPPORTED FORMATS: %u, %x, %s, %p, %c SPECIFIERS: %l*, %h*, %hh* !!!
     void kprintf(const char* fmt, ...);
 #endif
 
