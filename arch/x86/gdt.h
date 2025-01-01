@@ -88,7 +88,7 @@ typedef struct {
         uint32_t ldtr;
         uint32_t iobp;
         uint32_t ssp;
-    } tss_t;
+    } __attribute__((packed)) tss_t;
 
     typedef struct {
         uint16_t limit_low;
@@ -105,7 +105,7 @@ typedef struct {
     } __attribute__((packed)) gdt_pointer_t;
 #elif defined(__x86_64__)
     typedef struct {
-        uint64_t reserved0;
+        uint32_t reserved0; 
         uint64_t rsp0;
         uint64_t rsp1;
         uint64_t rsp2;
@@ -113,7 +113,7 @@ typedef struct {
         uint64_t ist[7];
         uint64_t reserved2;
         uint32_t iobase;
-    } tss_t;
+    } __attribute__((packed)) tss_t;
 
     typedef struct {
         uint16_t limit_low;
@@ -121,7 +121,7 @@ typedef struct {
         uint8_t base_middle;
         uint8_t access;
         uint8_t flags_limit;
-        uint8_t base_mid;
+        uint8_t base_mid2;
         uint32_t base_high;
         uint32_t zero;
     } __attribute__((packed)) tss_entry_t;
@@ -143,14 +143,14 @@ static inline gdt_pointer_t make_gdt_pointer(gdt_entry_t* entries, uint16_t coun
     return pointer;
 }
 
-static inline tss_entry_t make_tss_entry(tss_t* tss,uint8_t type) {
+static inline tss_entry_t make_tss_entry(tss_t* tss) {
     tss_entry_t entry;
-    entry.limit_low = sizeof(tss_entry_t) - 1;
-    entry.base_low = (uint16_t)(uint64_t)tss; // werror ffs
-    entry.base_middle = (uint8_t)((uint64_t)tss >> 16);
-    entry.access = TSS_ACCESS_PRESENT | 0 << TSS_ACCESS_DPL_SHIFT | TSS_ACCESS_DESC_TYPE | type;
+    entry.limit_low = sizeof(tss_t);
+    entry.base_low = (uint16_t)((uint64_t)tss & 0xffff); 
+    entry.base_middle = (uint8_t)(((uint64_t)tss >> 16) & 0xff);
+    entry.access = TSS_ACCESS_PRESENT | TSS_ACCESS_TYPE_MODE_DEP;
     entry.flags_limit = 0;
-    entry.base_mid = (uint8_t)((uint64_t)tss >> 24);
+    entry.base_mid2 = (uint8_t)(((uint64_t)tss >> 24) & 0xff);
     entry.base_high = (uint32_t)((uint64_t)tss >> 32);
     entry.zero = 0;
     return entry;
