@@ -80,7 +80,7 @@ char    *strtok_r(char *, const char *, char **);
         for (size_t i = 0; i < n; i++) {
             pdest[i] = psrc[i];
             if (pdest[i] == c) {
-                return &pdest[i];
+                return &pdest[i]+1;
             }
         }
 
@@ -327,7 +327,7 @@ char    *strtok_r(char *, const char *, char **);
 
     char    *strtok_r(char *s1, const char *s2, char **lasts){
         if(s1 == NULL){
-            s1 = last;
+            s1 = *lasts;
         }
         s1 += strspn(s1, s2);
         if(*s1 == '\0'){
