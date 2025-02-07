@@ -21,7 +21,7 @@
 #error "Please define __kcease()"
 #endif
 
-static char* krnlaid_log_log_levels[] = {
+__attribute__((unused)) static char* krnlaid_log_log_levels[] = {
     "TRAC",
     "DBG=",
     "WARN",
