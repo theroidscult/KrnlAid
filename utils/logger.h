@@ -11,8 +11,9 @@
 
 #define KRNLAID_LOG_TRACE 0
 #define KRNLAID_LOG_DEBUG 1
-#define KRNLAID_LOG_WARN  2
-#define KRNLAID_LOG_ERROR 3
+#define KRNLAID_LOG_INFO  2
+#define KRNLAID_LOG_WARN  3
+#define KRNLAID_LOG_ERROR 4
 
 #ifndef __kprintf
 #error "Please define __kprintf(const char *fmt, ...)"
@@ -24,6 +25,7 @@
 __attribute__((unused)) static char* krnlaid_log_log_levels[] = {
     "TRAC",
     "DBG=",
+    "INFO",
     "WARN",
     "ERR=",
 };
@@ -36,8 +38,15 @@ __attribute__((unused)) static char* krnlaid_log_log_levels[] = {
         __kcease(); \
     }
 
-#define log_trace(fmt, ...) __krnlaid_log(KRNLAID_LOG_TRACE, fmt, ##__VA_ARGS__)
-#define log_debug(fmt, ...) __krnlaid_log(KRNLAID_LOG_DEBUG, fmt, ##__VA_ARGS__)
+#ifdef DEBUG
+    #define log_trace(fmt, ...) __krnlaid_log(KRNLAID_LOG_TRACE, fmt, ##__VA_ARGS__)
+    #define log_debug(fmt, ...) __krnlaid_log(KRNLAID_LOG_DEBUG, fmt, ##__VA_ARGS__)
+#else
+    #define log_trace(...)
+    #define log_debug(...) //don't do anything
+#endif
+
+#define log_info(fmt, ...)  __krnlaid_log(KRNLAID_LOG_INFO,  fmt, ##__VA_ARGS__)
 #define log_warn(fmt, ...)  __krnlaid_log(KRNLAID_LOG_WARN,  fmt, ##__VA_ARGS__)
 #define log_error(fmt, ...) __krnlaid_log(KRNLAID_LOG_ERROR, fmt, ##__VA_ARGS__)
 
