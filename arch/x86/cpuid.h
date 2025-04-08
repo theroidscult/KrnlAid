@@ -462,24 +462,138 @@ enum leaves {
     * @ Retruned EDX: Reserved
     */
    CPUID_CACHE_ACCESS_INFO = 0x00000009,
+   /* @ Architectural Performance Monitoring
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_PERFORMANCE_MONITORING = 0x0000000A,
+   /* @ Extended Topology Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_EXTENDENDED_TOPOLOGY = 0x0000000B,
+   /* @ Extended Topology Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_EXTENDENDED_TOPOLOGY2 = 0x0000000D,
+   /* @ RDT Monitoring Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_INTEL_RDT = 0x0000000F,
+   /* @ RDT Allocation enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_INTEL_RDT2 = 0x00000010,
+   /* @ Intel SGX Attribute Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_INTEL_SGX = 0x00000012,
+   /* @ Intel Processor Trace Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_CPU_TRACE_ENUM = 0x00000014,
+   /* @ Time Stamp Counter and Norminal Core Crytal Clock Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_TSC = 0x00000015,
+   /* @ Processor Frequency Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_CPU_FREQ_INFO = 0x00000016,
+   /* @ SOC Vendor Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_SOC_VENDOR = 0x00000017,
+   /* @ Deterministic Address Translation Parameters
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_DETERMINISTIC_ADRESS_TRANSLATION_PARAMS = 0x00000018,
+   /* @ Key Locker
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_KEY_LOCKER = 0x000000019,
+   /* @ Native Model ID
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_NATIVE_MODEL_ID = 0x0000001A,
+   /* @ PCONFIG Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_PCONFIG_INFO = 0x0000001B,
+   /* @ Last Branch Records Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_LAST_BRACH = 0x00000001C,
+   /* @ Tile Information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_TILE_INFO = 0x00000001D,
+   /* @ TMUL information
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_TMUL_INFO = 0x00000001E,
+   /* @ V2 Extended Topology Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_V2_EXTENDED_TOPOLOGY = 0x00000001F,
+   /* @ V2 Extended Topology Enumeration
+    * @ Returned EAX: Undocumented
+    * @ Returned EBX: Undocumented
+    * @ Returned ECX: Undocumented
+    * @ Retruned EDX: Undocumented
+    */
    CPUID_V2_EXTENDED_TOPOLOGY2 = 0x000000020,
    //TODO: add the bitmasks for these Microsoft ones
    /* @ Hypervisor CPUID Leaf Range
