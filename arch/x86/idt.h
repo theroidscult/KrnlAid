@@ -3,13 +3,19 @@
 
 #include <stdint.h>
 
+//Descriptor type: interrupt
 #define IDT_TYPE_INTERRUPT 0x0E
+//Descriptor type: trap
 #define IDT_TYPE_TRAP 0x0F
 
+//Is the descriptor present
 #define IDT_ACCESS_PRESENT 0x80
+//Shift for the present bit
 #define IDT_ACCESS_PRESENT_SHIFT 7
 
+//Mask for the privilige level of the descriptor
 #define IDT_ACCESS_DPL 0x60
+//Shift for the privilige level of the descriptor
 #define IDT_ACCESS_DPL_SHIFT 5
 
 #ifdef __i386__
@@ -44,6 +50,7 @@ typedef struct {
 } __attribute__((packed)) idt_pointer_t;
 #endif
 
+//Constructs an IDT pointer
 static inline idt_pointer_t make_idt_pointer(idt_entry_t* entries, uint16_t count) {
     idt_pointer_t pointer;
     pointer.limit = (count * sizeof(idt_entry_t)) - 1;
@@ -55,6 +62,7 @@ static inline idt_pointer_t make_idt_pointer(idt_entry_t* entries, uint16_t coun
     return pointer;
 }
 
+//loads an IDT
 static inline void load_idt(idt_pointer_t* pointer) {
     __asm__ __volatile__ (
         "lidt (%0)"
@@ -63,6 +71,7 @@ static inline void load_idt(idt_pointer_t* pointer) {
     );
 }
 
+//sets an IDT entry's vlaues
 static inline void idt_set_gate(idt_entry_t* entry, void* offset, uint8_t selector, uint8_t ist, uint8_t type_attr) {
     #ifdef __i386__
         entry->offset_low = (uint32_t)((uint32_t)offset & 0xFFFF);

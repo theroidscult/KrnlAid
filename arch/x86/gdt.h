@@ -3,52 +3,77 @@
 
 #include <stdint.h>
 
-
+//GDT present bit: this marks the entry as valid
 #define GDT_ACCESS_PRESENT 0x80
 #define GDT_ACCESS_PRESENT_SHIFT 7
 
+//GDT descriptor privilege level, 0-3
 #define GDT_ACCESS_DPL 0x60
 #define GDT_ACCESS_DPL_SHIFT 5
 
+//GDT descriptor type: either a general(if set) or system(if clear) segment
 #define GDT_ACCESS_DESC_TYPE 0x10
 #define GDT_ACCESS_DESC_TYPE_SHIFT 4
 
+//GDT executable flag: Can code execute from this segment?
 #define GDT_ACCESS_EXECUTABLE 0x08
 #define GDT_ACCESS_EXECUTABLE_SHIFT 3
 
+/*
+@ Conformance bit(in code segments): Can a lower privilige level execute code from this segment?
+@ Direction bit(in data segments): Does the segment grow up(0) or down(1)?
+*/
 #define GDT_ACCESS_DIRECTION 0x04
 #define GDT_ACCESS_DIRECTION_SHIFT 2
 
+/*
+@ Read flag(in cide segments): Can the segment be read?(code segments are never writable)
+@ Write flag(in data segments): Can the segment be written?(data segments are always readable)
+*/
 #define GDT_ACCESS_READ_WRITE 0x02
 #define GDT_ACCESS_READ_WRITE_SHIFT 1
 
+//CPU sets it to if its not already set on every access
 #define GDT_ACCESS_ACCESSED 0x01
 #define GDT_ACCESS_ACCESSED_SHIFT 0
 
+/*
+@ If set, the limit is in 4k units
+@ If its clear, it is in 1k units
+*/
 #define GDT_FLAGS_GRANULARITY 0x80
 #define GDT_FLAGS_GRANULARITY_SHIFT 7
 
+//Whether the segment is 32 bit(DO NOT SET IN CONJUNCTION WITH GDT_FLAGS_LIMIT_64BIT)
 #define GDT_FLAGS_LIMIT_32BIT 0x40
 #define GDT_FLAGS_LIMIT_32BIT_SHIFT 6
 
+//Whether the segment is 64 bit(DO NOT SET IN CONJUNCTION WITH GDT_FLAGS_LIMIT_32BIT)
 #define GDT_FLAGS_LIMIT_64BIT 0x20
 #define GDT_FLAGS_LIMIT_64BIT_SHIFT 5
 
+//Whether the segment is valid
 #define TSS_ACCESS_PRESENT 0x80
 #define TSS_ACCESS_PRESENT_SHIFT 7
 
+//The descriptor privilege level, 0-3
 #define TSS_ACCESS_DPL 0x60
 #define TSS_ACCESS_DPL_SHIFT 5
 
-#define TSS_ACCESS_DESC_TYPE 0x10
-#define TSS_ACCESS_DESC_TYPE_SHIFT 4
-
-#define TSS_ACCESS_TYPE_16BIT      0x01
-#define TSS_ACCESS_TYPE_LDT        0x02
-#define TSS_ACCESS_TYPE_16BIT_BUSY 0x03
-#define TSS_ACCESS_TYPE_MODE_DEP   0x09
-#define TSS_ACCESS_TYPE_MODE_BUSY  0x0D
+//The descriptor type
+#define TSS_ACCESS_TYPE 0x10
 #define TSS_ACCESS_TYPE_SHIFT 0
+
+//16 bit task state segment
+#define TSS_ACCESS_TYPE_16BIT      0x01
+//Local descriptor table
+#define TSS_ACCESS_TYPE_LDT        0x02
+//16 bit task state segment(busy)
+#define TSS_ACCESS_TYPE_16BIT_BUSY 0x03
+//32/64 bit task state segment
+#define TSS_ACCESS_TYPE_MODE_DEP   0x09
+//32/64 bit task state segment(busy)
+#define TSS_ACCESS_TYPE_MODE_BUSY  0x0D
 
 typedef struct {
     uint16_t limit_low;
@@ -132,6 +157,7 @@ typedef struct {
     } __attribute__((packed)) gdt_pointer_t;
 #endif
 
+//Constructs a GDT pointer
 static inline gdt_pointer_t make_gdt_pointer(gdt_entry_t* entries, uint16_t count) {
     gdt_pointer_t pointer;
     pointer.limit = (count * sizeof(gdt_entry_t)) - 1;
@@ -143,6 +169,7 @@ static inline gdt_pointer_t make_gdt_pointer(gdt_entry_t* entries, uint16_t coun
     return pointer;
 }
 
+//Constructs a TSS entry
 static inline tss_entry_t make_tss_entry(tss_t* tss) {
     tss_entry_t entry;
     entry.limit_low = sizeof(tss_t);
@@ -156,6 +183,7 @@ static inline tss_entry_t make_tss_entry(tss_t* tss) {
     return entry;
 }
 
+//loads a GDT
 static inline void load_gdt(gdt_pointer_t* pointer) {
     __asm__ __volatile__ (
         "lgdt (%0)"
@@ -164,6 +192,7 @@ static inline void load_gdt(gdt_pointer_t* pointer) {
     );
 }
 
+//loads a TSS
 static inline void load_tss(uint16_t index) {
     __asm__ __volatile__ (
         "ltr %0"
@@ -172,6 +201,10 @@ static inline void load_tss(uint16_t index) {
     );
 }
 
+/*
+@ Reloads segments
+@ IMPORTANT: DO THIS AFTER ALL GDT CHANGES BECAUSE IT ONLY APPLIES THE NEW GDT ON WRITE TO THE SEGMENT REGISTERS
+*/
 static inline void flush_cs_ds_etc(uint16_t cs, uint16_t ds) {
     #ifdef __i386__
     __asm__ __volatile__ (
